@@ -8,7 +8,10 @@ import {
 import { useFavorite } from '@affine/core/blocksuite/block-suite-header/favorite';
 import { Guard, useGuard } from '@affine/core/components/guard';
 import { IsFavoriteIcon } from '@affine/core/components/pure/icons';
-import { DocInfoSheet } from '@affine/core/mobile/components';
+import {
+  BiDirectionalLinksSheet,
+  DocInfoSheet,
+} from '@affine/core/mobile/components';
 import { MobileTocMenu } from '@affine/core/mobile/components/toc-menu';
 import { DocService } from '@affine/core/modules/doc';
 import { EditorService } from '@affine/core/modules/editor';
@@ -18,6 +21,7 @@ import { useI18n } from '@affine/i18n';
 import { track } from '@affine/track';
 import {
   DeleteIcon,
+  DualLinkIcon,
   EdgelessIcon,
   InformationIcon,
   MoreHorizontalIcon,
@@ -150,6 +154,16 @@ export const PageHeaderMenuButton = () => {
         items={<DocInfoSheet docId={docId} />}
       >
         <span>{t['com.affine.page-properties.page-info.view']()}</span>
+      </MenuSub>
+      <MenuSub
+        triggerOptions={{
+          prefixIcon: <DualLinkIcon />,
+          onClick: preventDefault,
+        }}
+        title="Bi-Directional Links"
+        items={<BiDirectionalLinksSheet docId={docId} />}
+      >
+        <span>Bi-Directional Links</span>
       </MenuSub>
       <MobileMenu
         title={t['com.affine.header.menu.toc']()}
