@@ -12,16 +12,13 @@ import {
   WorkspacePropertyRow,
 } from '@affine/core/components/properties';
 import { CreatePropertyMenuItems } from '@affine/core/components/properties/menu/create-doc-property';
-import { LinksRow } from '@affine/core/desktop/dialogs/doc-info/links-row';
 import { TimeRow } from '@affine/core/desktop/dialogs/doc-info/time-row';
 import type { DocCustomPropertyInfo } from '@affine/core/modules/db';
-import { DocDatabaseBacklinkInfo } from '@affine/core/modules/doc-info';
-import { DocLinksService } from '@affine/core/modules/doc-link';
 import { WorkspacePropertyService } from '@affine/core/modules/workspace-property';
 import { useI18n } from '@affine/i18n';
 import { PlusIcon } from '@blocksuite/icons/rc';
 import { useLiveData, useServices } from '@toeverything/infra';
-import { Suspense, useCallback, useEffect, useState } from 'react';
+import { Suspense, useCallback, useState } from 'react';
 
 import * as styles from './doc-info.css';
 
@@ -31,26 +28,19 @@ export const DocInfoSheet = ({
   docId: string;
   defaultOpenProperty?: DefaultOpenProperty;
 }) => {
-  const { workspacePropertyService, docLinksService } = useServices({
+  const { workspacePropertyService } = useServices({
     WorkspacePropertyService,
-    DocLinksService,
   });
   const t = useI18n();
 
   const canEditPropertyInfo = useGuard('Workspace_Properties_Update');
   const canEditProperty = useGuard('Doc_Update', docId);
-  const links = useLiveData(docLinksService.links.links$);
-  const backlinks = useLiveData(docLinksService.backlinks.backlinks$);
 
   const [newPropertyId, setNewPropertyId] = useState<string | null>(null);
 
   const onPropertyAdded = useCallback((property: DocCustomPropertyInfo) => {
     setNewPropertyId(property.id);
   }, []);
-
-  useEffect(() => {
-    docLinksService.backlinks.revalidateFromCloud();
-  }, [docLinksService.backlinks]);
 
   const properties = useLiveData(workspacePropertyService.sortedProperties$);
 
@@ -122,32 +112,6 @@ export const DocInfoSheet = ({
               )}
             </PropertyCollapsibleContent>
           </PropertyCollapsibleSection>
-          <Divider size="thinner" />
-
-          <DocDatabaseBacklinkInfo />
-
-          {backlinks && backlinks.length > 0 ? (
-            <>
-              <LinksRow
-                className={styles.linksRow}
-                references={backlinks}
-                count={backlinks.length}
-                label={t['com.affine.page-properties.backlinks']()}
-              />
-              <Divider size="thinner" />
-            </>
-          ) : null}
-          {links && links.length > 0 ? (
-            <>
-              <LinksRow
-                className={styles.linksRow}
-                references={links}
-                count={links.length}
-                label={t['com.affine.page-properties.outgoing-links']()}
-              />
-              <Divider size="thinner" />
-            </>
-          ) : null}
         </Suspense>
       </Scrollable.Viewport>
       <Scrollable.Scrollbar className={styles.scrollBar} />

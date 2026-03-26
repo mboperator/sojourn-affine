@@ -264,7 +264,7 @@ export const BlocksuiteDocEditor = forwardRef<
         ) : (
           <BlocksuiteEditorJournalDocTitle page={page} />
         )}
-        {!shared && displayDocInfo ? (
+        {!shared && !BUILD_CONFIG.isMobileEdition && displayDocInfo ? (
           <div className={styles.docPropertiesTableContainer}>
             <WorkspacePropertiesTable
               className={styles.docPropertiesTable}
@@ -290,7 +290,7 @@ export const BlocksuiteDocEditor = forwardRef<
         {!readonly && !BUILD_CONFIG.isMobileEdition && (
           <StarterBar doc={page} />
         )}
-        {!shared && displayBiDirectionalLink ? (
+        {!shared && !BUILD_CONFIG.isMobileEdition && displayBiDirectionalLink ? (
           <BiDirectionalLinkPanel />
         ) : null}
       </div>
