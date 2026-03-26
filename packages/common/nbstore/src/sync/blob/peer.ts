@@ -223,9 +223,42 @@ export class BlobSyncPeer {
         // should never reach here
         console.warn('Blob full upload error, retry in 15s', err);
       }
-      // wait for 15s before next loop
+      // wait for 15s before next loop, but wake immediately on 'online' event
+      // so that pending uploads flush as soon as connectivity resumes
       await new Promise<void>(resolve => {
-        setTimeout(resolve, 15000);
+        const timer = setTimeout(onDone, 15000);
+        const onOnline = () => onDone();
+        const onVisible = () => {
+          if (
+            typeof navigator !== 'undefined' &&
+            navigator.onLine &&
+            typeof document !== 'undefined' &&
+            document.visibilityState === 'visible'
+          ) {
+            onDone();
+          }
+        };
+
+        function onDone() {
+          clearTimeout(timer);
+          if (typeof globalThis.removeEventListener === 'function') {
+            globalThis.removeEventListener('online', onOnline);
+          }
+          if (typeof document !== 'undefined') {
+            document.removeEventListener('visibilitychange', onVisible);
+          }
+          resolve();
+        }
+
+        if (typeof globalThis.addEventListener === 'function') {
+          globalThis.addEventListener('online', onOnline);
+        }
+        // Also wake when the app returns from background while online
+        if (typeof document !== 'undefined') {
+          document.addEventListener('visibilitychange', onVisible);
+        }
+
+        signal?.addEventListener('abort', onDone, { once: true });
       });
       if (signal?.aborted) {
         return;

@@ -11,6 +11,7 @@ import {
   NativeClipboardProvider,
 } from '@blocksuite/affine-shared/services';
 import {
+  compressImageIfNeeded,
   convertToPng,
   formatSize,
   getBlockProps,
@@ -228,10 +229,12 @@ function hasExceeded(
 }
 
 async function buildPropsWith(std: BlockStdScope, file: File) {
-  const { size } = file;
+  // Compress large images (e.g. mobile camera photos) before storing
+  const compressed = await compressImageIfNeeded(file);
+  const { size } = compressed;
   const [imageSize, sourceId] = await Promise.all([
-    readImageSize(file),
-    std.store.blobSync.set(file),
+    readImageSize(compressed),
+    std.store.blobSync.set(compressed),
   ]);
 
   if (!(imageSize.width * imageSize.height)) {
