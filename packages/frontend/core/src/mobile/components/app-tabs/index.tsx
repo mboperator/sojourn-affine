@@ -29,10 +29,12 @@ export const AppTabs = ({
   const location = useLiveData(workbench.location$);
   const globalCache = useService(GlobalCacheService).globalCache;
 
-  // always set the active tab to home when the location is changed to home
+  // always sync active tab when navigating to a tab route
   useEffect(() => {
     if (location.pathname === '/home') {
       globalCache.set(cacheKey, 'home');
+    } else if (location.pathname === '/all') {
+      globalCache.set(cacheKey, 'all');
     }
   }, [globalCache, location.pathname]);
 
@@ -79,7 +81,7 @@ const AppTabLink = ({ route }: { route: AppTabLink }) => {
       key={route.to}
       replaceHistory
     >
-      <TabItem id={route.key} label={route.to.slice(1)}>
+      <TabItem id={route.key} label={route.label ?? route.to.slice(1)}>
         <route.Icon />
       </TabItem>
     </Link>

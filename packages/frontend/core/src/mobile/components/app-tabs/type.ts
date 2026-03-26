@@ -7,6 +7,7 @@ interface AppTabBase {
 export interface AppTabLink extends AppTabBase {
   Icon: React.FC;
   to: string;
+  label?: string;
   LinkComponent?: React.FC;
 }
 
