@@ -5,6 +5,11 @@ export const groupHeader = style({
   background: cssVarV2.layer.background.primary,
 });
 
+export const groupHeaderMobile = style({
+  background: 'transparent',
+  paddingTop: 16,
+});
+
 export const docItem = style({
   transition: 'width 0.2s ease-in-out',
 });

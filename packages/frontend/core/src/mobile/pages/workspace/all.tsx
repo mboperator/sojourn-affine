@@ -24,7 +24,7 @@ const AllDocs = () => {
       ],
       view: 'masonry',
       showDragHandle: false,
-      groupBy: undefined,
+      groupBy: { type: 'system', key: 'createdAt' },
       orderBy: undefined,
     })
   );
@@ -49,9 +49,10 @@ const AllDocs = () => {
             value: 'false',
           },
         ],
+        groupBy: { type: 'system', key: 'createdAt' },
         orderBy: {
           type: 'system',
-          key: 'updatedAt',
+          key: 'createdAt',
           desc: true,
         },
       })
