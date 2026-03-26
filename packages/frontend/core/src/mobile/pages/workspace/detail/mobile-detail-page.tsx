@@ -40,6 +40,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { AppTabs } from '../../../components';
+import { BlobSyncIndicator } from '../../../components/blob-sync-indicator';
 import { JournalConflictBlock } from './journal-conflict-block';
 import { JournalDatePicker } from './journal-date-picker';
 import * as styles from './mobile-detail-page.css';
@@ -308,6 +309,7 @@ const MobileDetailPage = ({
         </PageHeader>
         <JournalConflictBlock date={date} />
         <DetailPageImpl />
+        <BlobSyncIndicator />
         <AppTabs background={cssVarV2('layer/background/primary')} />
       </DetailPageWrapper>
     </div>
