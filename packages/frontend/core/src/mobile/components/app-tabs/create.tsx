@@ -43,7 +43,7 @@ export const AppTabCreate = ({ tab }: AppTabCustomFCProps) => {
   );
 
   return (
-    <TabItem id={tab.key} onClick={createPage} label="New Page">
+    <TabItem id={tab.key} onClick={createPage} label="New Entry" variant="center">
       <EditIcon />
     </TabItem>
   );

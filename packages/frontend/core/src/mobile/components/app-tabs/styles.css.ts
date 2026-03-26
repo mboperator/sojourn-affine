@@ -13,6 +13,7 @@ export const appTabs = style({
   borderTop: `0.5px solid ${cssVarV2.layer.insideBorder.border}`,
 
   width: '100dvw',
+  overflow: 'visible',
 
   zIndex: 1,
 
@@ -30,6 +31,7 @@ export const appTabsInner = style({
   justifyContent: 'space-between',
   alignItems: 'center',
   gap: 15.5,
+  overflow: 'visible',
 
   height: `calc(${globalVars.appTabHeight} + 2px)`,
   padding: '13px 16px',
@@ -51,4 +53,22 @@ export const tabItem = style({
       color: cssVarV2.button.primary,
     },
   },
+});
+
+export const centerButton = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: 56,
+  height: 56,
+  flexShrink: 0,
+  flex: 'none',
+  borderRadius: '50%',
+  backgroundColor: cssVarV2.button.primary,
+  color: '#fff',
+  fontSize: 28,
+  lineHeight: 0,
+  marginTop: -20,
+  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+  listStyle: 'none',
 });

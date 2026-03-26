@@ -3,15 +3,22 @@ import { LiveData, useLiveData, useService } from '@toeverything/infra';
 import { type PropsWithChildren, useCallback, useMemo } from 'react';
 
 import { cacheKey } from './constants';
-import { tabItem } from './styles.css';
+import { centerButton, tabItem } from './styles.css';
 
 export interface TabItemProps extends PropsWithChildren {
   id: string;
   label: string;
+  variant?: 'default' | 'center';
   onClick?: (isActive: boolean) => void;
 }
 
-export const TabItem = ({ id, label, children, onClick }: TabItemProps) => {
+export const TabItem = ({
+  id,
+  label,
+  children,
+  variant = 'default',
+  onClick,
+}: TabItemProps) => {
   const globalCache = useService(GlobalCacheService).globalCache;
   const activeTabId$ = useMemo(
     () => LiveData.from(globalCache.watch(cacheKey), 'home'),
@@ -22,16 +29,18 @@ export const TabItem = ({ id, label, children, onClick }: TabItemProps) => {
   const isActive = id === activeTabId;
 
   const handleClick = useCallback(() => {
-    globalCache.set(cacheKey, id);
+    if (variant !== 'center') {
+      globalCache.set(cacheKey, id);
+    }
     onClick?.(isActive);
-  }, [globalCache, id, isActive, onClick]);
+  }, [globalCache, id, isActive, onClick, variant]);
 
   return (
     <li
-      className={tabItem}
+      className={variant === 'center' ? centerButton : tabItem}
       role="tab"
       aria-label={label}
-      data-active={isActive}
+      data-active={variant === 'center' ? undefined : isActive}
       onClick={handleClick}
     >
       {children}
