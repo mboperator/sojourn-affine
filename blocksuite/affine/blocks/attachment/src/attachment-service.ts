@@ -20,12 +20,30 @@ export const AttachmentDropOption = FileDropConfigExtension({
     if (!attachmentFiles.length) return false;
 
     if (targetModel && !matchModels(targetModel, [SurfaceBlockModel])) {
-      addSiblingAttachmentBlocks(
-        std,
-        attachmentFiles,
-        targetModel,
-        placement
-      ).catch(console.error);
+      const videoFiles = attachmentFiles.filter(file =>
+        file.type.startsWith('video/')
+      );
+      const otherFiles = attachmentFiles.filter(
+        file => !file.type.startsWith('video/')
+      );
+
+      if (videoFiles.length) {
+        addSiblingAttachmentBlocks(
+          std,
+          videoFiles,
+          targetModel,
+          placement,
+          true
+        ).catch(console.error);
+      }
+      if (otherFiles.length) {
+        addSiblingAttachmentBlocks(
+          std,
+          otherFiles,
+          targetModel,
+          placement
+        ).catch(console.error);
+      }
 
       return true;
     }

@@ -73,7 +73,8 @@ export interface StorageProvider {
   head(key: string): Promise<GetObjectMetadata | undefined>;
   get(
     key: string,
-    signedUrl?: boolean
+    signedUrl?: boolean,
+    range?: { start: number; end?: number }
   ): Promise<{
     redirectUrl?: string;
     body?: BlobOutputType;

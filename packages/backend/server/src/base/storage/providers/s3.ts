@@ -241,7 +241,8 @@ export class S3StorageProvider implements StorageProvider {
 
   async get(
     key: string,
-    signedUrl?: boolean
+    signedUrl?: boolean,
+    _range?: { start: number; end?: number }
   ): Promise<{
     body?: Readable;
     metadata?: GetObjectMetadata;

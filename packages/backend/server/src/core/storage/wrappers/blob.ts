@@ -83,8 +83,13 @@ export class WorkspaceBlobStorage {
     });
   }
 
-  async get(workspaceId: string, key: string, signedUrl?: boolean) {
-    return this.provider.get(`${workspaceId}/${key}`, signedUrl);
+  async get(
+    workspaceId: string,
+    key: string,
+    signedUrl?: boolean,
+    range?: { start: number; end?: number }
+  ) {
+    return this.provider.get(`${workspaceId}/${key}`, signedUrl, range);
   }
 
   async presignPut(

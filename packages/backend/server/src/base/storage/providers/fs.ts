@@ -115,7 +115,11 @@ export class FsStorageProvider implements StorageProvider {
     return metadata;
   }
 
-  async get(key: string): Promise<{
+  async get(
+    key: string,
+    _signedUrl?: boolean,
+    range?: { start: number; end?: number }
+  ): Promise<{
     body?: Readable;
     metadata?: GetObjectMetadata;
   }> {
@@ -123,7 +127,7 @@ export class FsStorageProvider implements StorageProvider {
 
     try {
       const metadata = this.readMetadata(key);
-      const stream = this.readObject(this.join(key));
+      const stream = this.readObject(this.join(key), range);
       this.logger.verbose(`Read object \`${key}\``);
       return {
         body: stream,
@@ -248,11 +252,14 @@ export class FsStorageProvider implements StorageProvider {
     return join(this.path, ...paths);
   }
 
-  private readObject(file: string): Readable | undefined {
+  private readObject(
+    file: string,
+    range?: { start: number; end?: number }
+  ): Readable | undefined {
     const state = statSync(file, { throwIfNoEntry: false });
 
     if (state?.isFile()) {
-      return createReadStream(file);
+      return createReadStream(file, range);
     }
 
     return undefined;

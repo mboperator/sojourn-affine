@@ -486,6 +486,27 @@ const contentMediaToolGroup: KeyboardToolPanelGroup = {
       },
     },
     {
+      name: 'Video',
+      icon: AttachmentIcon(),
+      showWhen: ({ std }) =>
+        std.store.schema.flavourSchemaMap.has('affine:attachment'),
+      action: async ({ std }) => {
+        const [_, { selectedModels }] = std.command.exec(
+          getSelectedModelsCommand
+        );
+        const model = selectedModels?.[0];
+        if (!model) return;
+
+        const file = await openSingleFileWith('Videos');
+        if (!file) return;
+
+        await addSiblingAttachmentBlocks(std, [file], model, 'after', true);
+        if (model.text?.length === 0) {
+          std.store.deleteBlock(model);
+        }
+      },
+    },
+    {
       name: 'Equation',
       icon: TeXIcon(),
       showWhen: ({ std }) =>
