@@ -212,7 +212,8 @@ export class R2StorageProvider extends S3StorageProvider {
 
   override async get(
     key: string,
-    signedUrl?: boolean
+    signedUrl?: boolean,
+    _range?: { start: number; end?: number }
   ): Promise<{
     body?: Readable;
     metadata?: GetObjectMetadata;

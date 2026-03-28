@@ -1,6 +1,6 @@
 import { openSingleFileWith } from '@blocksuite/affine-shared/utils';
 import { type SlashMenuConfig } from '@blocksuite/affine-widget-slash-menu';
-import { ExportToPdfIcon, FileIcon } from '@blocksuite/icons/lit';
+import { ExportToPdfIcon, FileIcon, FileIconMp4Icon } from '@blocksuite/icons/lit';
 
 import { addSiblingAttachmentBlocks } from '../utils';
 import { AttachmentTooltip, PDFTooltip } from './tooltips';
@@ -48,6 +48,26 @@ export const attachmentSlashMenuConfig: SlashMenuConfig = {
           if (!file) return;
 
           await addSiblingAttachmentBlocks(std, [file], model);
+          if (model.text?.length === 0) {
+            std.store.deleteBlock(model);
+          }
+        })().catch(console.error);
+      },
+    },
+    {
+      name: 'Video',
+      description: 'Embed a video in document.',
+      icon: FileIconMp4Icon({ width: '1em', height: '1em' }),
+      searchAlias: ['video', 'mp4', 'movie'],
+      group: '4_Content & Media@5',
+      when: ({ model }) =>
+        model.store.schema.flavourSchemaMap.has('affine:attachment'),
+      action: ({ std, model }) => {
+        (async () => {
+          const file = await openSingleFileWith('Videos');
+          if (!file) return;
+
+          await addSiblingAttachmentBlocks(std, [file], model, 'after', true);
           if (model.text?.length === 0) {
             std.store.deleteBlock(model);
           }

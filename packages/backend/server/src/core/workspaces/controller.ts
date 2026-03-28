@@ -56,6 +56,7 @@ export class WorkspacesController {
   @CallMetric('controllers', 'workspace_get_blob')
   async blob(
     @CurrentUser() user: CurrentUser | undefined,
+    @Req() req: Request,
     @Param('id') workspaceId: string,
     @Param('name') name: string,
     @Query('redirect') redirect: string | undefined,
@@ -65,10 +66,24 @@ export class WorkspacesController {
       .user(user?.id ?? 'anonymous')
       .workspace(workspaceId)
       .assert('Workspace.Read');
+
+    const rangeHeader = req.headers.range;
+    let range: { start: number; end?: number } | undefined;
+    if (rangeHeader) {
+      const match = rangeHeader.match(/^bytes=(\d+)-(\d*)$/);
+      if (match) {
+        range = {
+          start: parseInt(match[1], 10),
+          end: match[2] ? parseInt(match[2], 10) : undefined,
+        };
+      }
+    }
+
     const { body, metadata, redirectUrl } = await this.storage.get(
       workspaceId,
       name,
-      true
+      true,
+      range
     );
 
     if (redirectUrl) {
@@ -89,6 +104,8 @@ export class WorkspacesController {
       });
     }
 
+    res.setHeader('accept-ranges', 'bytes');
+
     // metadata should always exists if body is not null
     if (metadata) {
       res.setHeader(
@@ -98,7 +115,17 @@ export class WorkspacesController {
           : metadata.contentType
       );
       res.setHeader('last-modified', metadata.lastModified.toUTCString());
-      res.setHeader('content-length', metadata.contentLength);
+
+      if (range) {
+        const total = metadata.contentLength;
+        const start = range.start;
+        const end = range.end ?? total - 1;
+        res.status(206);
+        res.setHeader('content-range', `bytes ${start}-${end}/${total}`);
+        res.setHeader('content-length', end - start + 1);
+      } else {
+        res.setHeader('content-length', metadata.contentLength);
+      }
     } else {
       this.logger.warn(`Blob ${workspaceId}/${name} has no metadata`);
     }
