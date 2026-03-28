@@ -1,20 +1,19 @@
+import { useThemeColorV2 } from '@affine/component';
 import {
   getDateFromUrl,
   JournalPlaceholder,
 } from '@affine/core/desktop/pages/workspace/journals';
 import { JournalService } from '@affine/core/modules/journal';
 import { ViewService, WorkbenchService } from '@affine/core/modules/workbench';
-import { i18nTime } from '@affine/i18n';
 import { useLiveData, useService } from '@toeverything/infra';
-import { cssVarV2 } from '@toeverything/theme/v2';
-import dayjs from 'dayjs';
 import { useCallback, useLayoutEffect, useState } from 'react';
 
-import { AppTabs, PageHeader } from '../../components';
+import { AppTabs } from '../../components';
+import { AllDocsHeader } from '../../views';
 import { JournalDatePicker } from './detail/journal-date-picker';
 import * as styles from './journals.css';
 
-export const JournalsPageWithConfirmation = () => {
+const JournalContent = () => {
   const journalService = useService(JournalService);
   const workbench = useService(WorkbenchService).workbench;
   const view = useService(ViewService).view;
@@ -50,29 +49,24 @@ export const JournalsPageWithConfirmation = () => {
 
   return (
     <>
-      <div className={styles.container}>
-        <PageHeader
-          className={styles.header}
-          bottom={
-            <JournalDatePicker
-              date={dateString}
-              onChange={handleDateChange}
-              withDotDates={allJournalDates}
-              className={styles.journalDatePicker}
-            />
-          }
-          contentClassName={styles.headerTitle}
-          bottomSpacer={94}
-        >
-          {i18nTime(dayjs(dateString), { absolute: { accuracy: 'month' } })}
-        </PageHeader>
-        <JournalPlaceholder dateString={dateString} />
-      </div>
-      <AppTabs background={cssVarV2('layer/background/primary')} />
+      <JournalDatePicker
+        date={dateString}
+        onChange={handleDateChange}
+        withDotDates={allJournalDates}
+        className={styles.journalDatePicker}
+      />
+      <JournalPlaceholder dateString={dateString} />
     </>
   );
 };
 
 export const Component = () => {
-  return <JournalsPageWithConfirmation />;
+  useThemeColorV2('layer/background/mobile/primary');
+  return (
+    <>
+      <AllDocsHeader />
+      <AppTabs />
+      <JournalContent />
+    </>
+  );
 };

@@ -8,7 +8,7 @@ import { Suspense, useEffect } from 'react';
 
 import * as styles from './doc-info.css';
 
-export const BiDirectionalLinksSheet = ({ docId }: { docId: string }) => {
+export const BiDirectionalLinksSheet = () => {
   const { docLinksService } = useServices({
     DocLinksService,
   });

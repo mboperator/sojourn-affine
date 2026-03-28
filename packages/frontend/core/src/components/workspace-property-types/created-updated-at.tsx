@@ -2,6 +2,7 @@ import { PropertyValue, Tooltip } from '@affine/component';
 import { type DocRecord, DocService } from '@affine/core/modules/doc';
 import { i18nTime, useI18n } from '@affine/i18n';
 import { useLiveData, useServices } from '@toeverything/infra';
+import dayjs from 'dayjs';
 
 import { PlainTextDocGroupHeader } from '../explorer/docs-view/group-header';
 import type { GroupHeaderProps } from '../explorer/types';
@@ -59,6 +60,19 @@ export const CreatedAtGroupHeader = ({
   groupId,
   docCount,
 }: GroupHeaderProps) => {
+  if (BUILD_CONFIG.isMobileEdition && groupId) {
+    const d = dayjs(groupId);
+    return (
+      <div className={styles.mobileDateGroupHeader}>
+        <div className={styles.mobileDateGroupHeaderDate}>
+          {d.format('MMMM D')}
+        </div>
+        <div className={styles.mobileDateGroupHeaderDay}>
+          {d.format('dddd')}
+        </div>
+      </div>
+    );
+  }
   const date = groupId ? toRelativeDate(groupId) : 'No Date';
   return (
     <PlainTextDocGroupHeader

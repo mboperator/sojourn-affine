@@ -135,8 +135,10 @@ export const DocsExplorer = ({
       return {
         id: group.key,
         Component: groupBy ? GroupHeader : undefined,
-        height: groupBy ? 24 : 0,
-        className: styles.groupHeader,
+        height: groupBy ? (BUILD_CONFIG.isMobileEdition ? 88 : 24) : 0,
+        className: BUILD_CONFIG.isMobileEdition
+          ? styles.groupHeaderMobile
+          : styles.groupHeader,
         items: group.items.map((docId: string) => {
           if (view === 'list') {
             return {
@@ -252,8 +254,9 @@ export const DocsExplorer = ({
         items={masonryItems}
         gapY={BUILD_CONFIG.isMobileEdition ? 12 : view === 'list' ? 12 : 24}
         gapX={BUILD_CONFIG.isMobileEdition ? 12 : 24}
-        groupsGap={12}
-        groupHeaderGapWithItems={12}
+        groupsGap={BUILD_CONFIG.isMobileEdition ? 8 : 12}
+        groupHeaderGapWithItems={BUILD_CONFIG.isMobileEdition ? 16 : 12}
+        stickyGroupHeader={!BUILD_CONFIG.isMobileEdition}
         columns={view === 'list' ? 1 : undefined}
         itemWidthMin={masonryItemWidthMin ?? 220}
         preloadHeight={100}
